@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Coin Clicker</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background-color: #1e1e2f;
+      color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      user-select: none;
+    }
+
+    .container {
+      background-color: #2a2a3d;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      max-width: 720px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: #ffd700;
+    }
+
+    .btn {
+      padding: 10px 18px;
+      margin-top: 8px;
+      font-size: 15px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to right, #ffa500, #ffcc00);
+      color: #1e1e2f;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(to right, #ffc107, #fff176);
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    #coinDisplay,
+    #upgradeInfo,
+    #multiplierDisplay {
+      margin-bottom: 12px;
+      font-size: 18px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .upgradeCard {
+      background-color: #1b1b2b;
+      padding: 15px;
+      border-radius: 10px;
+      color: #e0e0e0;
+      text-align: left;
+    }
+
+    .upgradeCard h2 {
+      margin: 0;
+      font-size: 18px;
+      color: #ffa500;
+    }
+
+    .upgradeCard p {
+      font-size: 14px;
+      margin: 8px 0;
+    }
+
+    .prestigeCard {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    #popupMessage {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ff5252;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 999;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="coinDisplay">Coins: 0</h1>
+    <p id="multiplierDisplay">Multiplier: <strong>1x</strong></p>
+    <button class="btn" onclick="addCoin()">+1 Coin</button>
+    <p id="upgradeInfo">Current coin gain per click: <strong>1</strong></p>
+
+    <!-- 🌟 Centered Prestige Section -->
+    <div class="upgradeCard prestigeCard">
+      <h2>🌟 Prestige System</h2>
+      <p>Reset your progress to gain a permanent multiplier boost.</p>
+      <p id="prestigeCostInfo">Next Prestige Cost: <strong>250,000 Coins</strong></p>
+      <button class="btn" id="prestigeButton" onclick="prestige()">Prestige (1x → 2x)</button>
+    </div>
+
+    <!-- 🔧 Upgrade Cards Grid -->
+    <div class="grid">
+      <div class="upgradeCard">
+        <h2>😀 Friends</h2>
+        <p>Hire friends for +1 coins per click</p>
+        <button class="btn" id="Upgrade1Cost" onclick="upgradeClick1()">Upgrade - 10 Coins</button>
+      </div>
+
+      <div class="upgradeCard">
+        <h2>💰 Invest</h2>
+        <p>Put your coins to work for +10 gain</p>
+        <button class="btn" id="Upgrade2Cost" onclick="upgradeClick2()">Upgrade - 100 Coins</button>
+      </div>
+
+      <div class="upgradeCard">
+        <h2>📈 Stock</h2>
+        <p>Stock boosts click gain by +100</p>
+        <button class="btn" id="Upgrade3Cost" onclick="upgradeClick3()">Upgrade - 1,000 Coins</button>
+      </div>
+
+      <div class="upgradeCard">
+        <h2>🏦 Bank</h2>
+        <p>Banking magic adds +1,000 coins/click</p>
+        <button class="btn" id="Upgrade4Cost" onclick="upgradeClick4()">Upgrade - 10,000 Coins</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="popupMessage">Insufficient coins!</div>
+
+  <script>
+    let coins = 0;
+    let coinIncrease = 1;
+    let baseIncrease = 1;
+    let multiplier = 1;
+    let prestigeCount = 0;
+    let prestigeCost = 250000;
+    let UpgradeCost1 = 10;
+    let UpgradeCost2 = 100;
+    let UpgradeCost3 = 1000;
+    let UpgradeCost4 = 10000;
+
+    const coinDisplay = document.getElementById("coinDisplay");
+    const upgradeInfo = document.getElementById("upgradeInfo");
+    const multiplierDisplay = document.getElementById("multiplierDisplay");
+    const prestigeButton = document.getElementById("prestigeButton");
+    const prestigeCostInfo = document.getElementById("prestigeCostInfo");
+
+    function formatNumber(number) {
+      return number.toLocaleString();
+    }
+
+    function addCoin() {
+      coins += coinIncrease * multiplier;
+      updateDisplay();
+    }
+
+    function showPopup(message) {
+      const popup = document.getElementById("popupMessage");
+      popup.textContent = message;
+      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "none";
+      }, 2000);
+    }
+
+    function prestige() {
+      if (coins >= prestigeCost) {
+        prestigeCount++;
+        multiplier = 1 + prestigeCount;
+        coins = 0;
+        baseIncrease = 1;
+        coinIncrease = baseIncrease;
+        prestigeCost += 250000;
+        UpgradeCost1 = 10;
+        UpgradeCost2 = 100;
+        UpgradeCost3 = 1000;
+        UpgradeCost4 = 10000;
+        showPopup(`✨ Prestige earned! Multiplier is now ${multiplier}x`);
+        updateDisplay();
+      } else {
+        showPopup(`You need ${formatNumber(prestigeCost)} coins to prestige`);
+      }
+    }
+
+    function updateDisplay() {
+      coinDisplay.textContent = `Coins: ${formatNumber(coins)}`;
+      multiplierDisplay.innerHTML = `Multiplier: <strong>${multiplier}x</strong>`;
+      upgradeInfo.innerHTML = `Current coin gain per click: <strong>${formatNumber(coinIncrease)}</strong>`;
+      prestigeCostInfo.innerHTML = `Next Prestige Cost: <strong>${formatNumber(prestigeCost)} Coins</strong>`;
+      prestigeButton.textContent = `Prestige (${multiplier}x → ${multiplier + 1}x)`;
+
+      document.getElementById("Upgrade1Cost").textContent = `Upgrade - ${formatNumber(UpgradeCost1)} Coins`;
+      document.getElementById("Upgrade2Cost").textContent = `Upgrade - ${formatNumber(UpgradeCost2)} Coins`;
+      document.getElementById("Upgrade3Cost").textContent = `Upgrade - ${formatNumber(UpgradeCost3)} Coins`;
+      document.getElementById("Upgrade4Cost").textContent = `Upgrade - ${formatNumber(UpgradeCost4)} Coins`;
+    }
+
+    function upgradeClick1() {
+      if (coins >= UpgradeCost1) {
+        coins -= UpgradeCost1;
+        coinIncrease += 1;
+        UpgradeCost1 += 10;
+        updateDisplay();
+      } else {
+        showPopup(`You need ${formatNumber(UpgradeCost1)} coins to upgrade Friends`);
+      }
+    }
+
+    function upgradeClick2() {
+      if (coins >= UpgradeCost2) {
+        coins -= UpgradeCost2;
+        coinIncrease += 10;
+        UpgradeCost2 += 100;
+        updateDisplay();
+      } else {
+        showPopup(`You need ${formatNumber(UpgradeCost2)} coins to upgrade Invest`);
+      }
+    }
+
+    function upgradeClick3() {
+      if (coins >= UpgradeCost3) {
+        coins -= UpgradeCost3;
+        coinIncrease += 100;
+        UpgradeCost3 += 1000;
+        updateDisplay();
+      } else {
+        showPopup(`You need ${formatNumber(UpgradeCost3)} coins to upgrade Stock`);
+      }
+    }
+
+    function upgradeClick4() {
+      if (coins >= UpgradeCost4) {
+        coins -= UpgradeCost4;
+        coinIncrease += 1000;
+        UpgradeCost4 += 10000;
+        updateDisplay();
+      } else {
+        showPopup(`You need ${formatNumber(UpgradeCost4)} coins to upgrade Bank`);
+      }
+    }
+
+    updateDisplay();
+  </script>
+</body>
+</html>
