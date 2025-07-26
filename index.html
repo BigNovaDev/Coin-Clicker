@@ -123,7 +123,7 @@
     <div class="upgradeCard prestigeCard">
       <h2>🌟 Prestige System</h2>
       <p>Reset your progress to gain a permanent multiplier boost.</p>
-      <p id="prestigeCostInfo">Next Prestige Cost: <strong>250,000 Coins</strong></p>
+      <p id="prestigeCostInfo">Next Prestige Cost: <strong>1,000,000,000 Coins</strong></p>
       <button class="btn" id="prestigeButton" onclick="prestige()">Prestige (1x → 2x)</button>
     </div>
 
@@ -138,19 +138,19 @@
       <div class="upgradeCard">
         <h2>💰 Invest</h2>
         <p>Put your coins to work for +10 gain</p>
-        <button class="btn" id="Upgrade2Cost" onclick="upgradeClick2()">Upgrade - 100 Coins</button>
+        <button class="btn" id="Upgrade2Cost" onclick="upgradeClick2()">Upgrade - 1,000 Coins</button>
       </div>
 
       <div class="upgradeCard">
         <h2>📈 Stock</h2>
         <p>Stock boosts click gain by +100</p>
-        <button class="btn" id="Upgrade3Cost" onclick="upgradeClick3()">Upgrade - 1,000 Coins</button>
+        <button class="btn" id="Upgrade3Cost" onclick="upgradeClick3()">Upgrade - 100,000 Coins</button>
       </div>
 
       <div class="upgradeCard">
         <h2>🏦 Bank</h2>
         <p>Banking magic adds +1,000 coins/click</p>
-        <button class="btn" id="Upgrade4Cost" onclick="upgradeClick4()">Upgrade - 10,000 Coins</button>
+        <button class="btn" id="Upgrade4Cost" onclick="upgradeClick4()">Upgrade - 10,000,000 Coins</button>
       </div>
     </div>
   </div>
@@ -163,12 +163,12 @@ let coinIncrease = 1;
 let baseIncrease = 1;
 let multiplier = 1;
 let prestigeCount = 0;
-let prestigeCost = 250000;
+let prestigeCost = 1000000000;
 
 let UpgradeCost1 = 10;
-let UpgradeCost2 = 100;
-let UpgradeCost3 = 1000;
-let UpgradeCost4 = 10000;
+let UpgradeCost2 = 1000;
+let UpgradeCost3 = 100000;
+let UpgradeCost4 = 10000000;
 
 const coinDisplay = document.getElementById("coinDisplay");
 const upgradeInfo = document.getElementById("upgradeInfo");
@@ -241,7 +241,7 @@ function upgradeClick2() {
   if (coins >= UpgradeCost2) {
     coins -= UpgradeCost2;
     coinIncrease += 10;
-    UpgradeCost2 += 100;
+    UpgradeCost2 += 1000;
     updateDisplay();
   } else {
     showPopup(`You need ${formatNumber(UpgradeCost2)} coins to upgrade Invest`);
@@ -252,7 +252,7 @@ function upgradeClick3() {
   if (coins >= UpgradeCost3) {
     coins -= UpgradeCost3;
     coinIncrease += 100;
-    UpgradeCost3 += 1000;
+    UpgradeCost3 += 100000;
     updateDisplay();
   } else {
     showPopup(`You need ${formatNumber(UpgradeCost3)} coins to upgrade Stock`);
@@ -263,7 +263,7 @@ function upgradeClick4() {
   if (coins >= UpgradeCost4) {
     coins -= UpgradeCost4;
     coinIncrease += 1000;
-    UpgradeCost4 += 10000;
+    UpgradeCost4 += 10000000;
     updateDisplay();
   } else {
     showPopup(`You need ${formatNumber(UpgradeCost4)} coins to upgrade Bank`);
